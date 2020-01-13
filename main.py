@@ -155,12 +155,13 @@ class MainApplication:
 
         # this runs only if the user didn't press 'cancel'
         if path != '':
-            self.path = path
+            self.dir = path
             self.open_file_2()
 
     @save_changes
     def open_file_2(self):
             # opens the specified file
+            self.path = self.dir
             file_ = open(self.path, 'r')
             self.text = file_.read() # stores the text if the file
             # to the one in the opened file
