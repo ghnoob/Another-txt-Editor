@@ -1,39 +1,11 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 import tkinter.scrolledtext
-import tkinter.filedialog
-import tkinter.messagebox
+from filemenu import FileMenu
 
 # globals
 app_name = 'Another text editor'
 
-# decorator
-def save_changes(function):
-    """Decorator function.
-    
-    When we want to close a file that has changed without saving it,
-    a popup ask us if we want to save our work.
-    """
-    def wrapper(self):
-        if self.path == '':
-            path = 'New file'
-        else:
-            path = self.path
-            
-        if self.ismodified:
-            s = tk.messagebox.askyesnocancel(
-                title='Unsaved changes',
-                message=f'Do you want to save the changes made in\n"{path}"?'
-            )
-            if s:
-                self.save()
-            elif s is None:
-                return
-        function(self)
-        self.reset()
-    return wrapper
-
-
+# UI
 class MainApplication:
     """Main window of the app.
     
@@ -73,7 +45,7 @@ class MainApplication:
 
         # if we close the app with the window manager, calls to the
         # app's custom exit method
-        self.master.protocol('WM_DELETE_WINDOW', self.exit)
+        self.master.protocol('WM_DELETE_WINDOW', lambda: FileMenu(self).exit())
 
     def configure_widgets(self):
         """General configuration of the widgets."""
@@ -108,13 +80,14 @@ class MainApplication:
         menubar = tk.Menu(self.master)
 
         # file menu
+        fl = FileMenu(self)
         filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_command(label='New file', command=self.new_file)
-        filemenu.add_command(label='Open file', command=self.open_file)
-        filemenu.add_command(label='Save file', command=self.save_file)
-        filemenu.add_command(label='Save file as...',command=self.save_file_as)
+        filemenu.add_command(label='New file', command=fl.new_file)
+        filemenu.add_command(label='Open file', command=fl.open_file)
+        filemenu.add_command(label='Save file', command=fl.save_file)
+        filemenu.add_command(label='Save file as...',command=fl.save_file_as)
         filemenu.add_separator()
-        filemenu.add_command(label='Exit', command=self.exit)
+        filemenu.add_command(label='Exit', command=fl.exit)
         menubar.add_cascade(label='File', menu=filemenu)
 
         # add the menu to the root widget
@@ -132,82 +105,6 @@ class MainApplication:
         self.textbox.bind('<Key>', self.detect_text_changes)
         
         self.textbox.pack(fill='both', expand=1)
-
-    # file menu functions   
-    @save_changes
-    def new_file(self):
-        """Creates a new text file."""
-        self.text = '' # clears the text display 
-        self.path = '' # resets the path
-        self.textbox.delete(1.0, 'end')
-
-    def open_file(self):
-        """Opens the selected text file.
-
-        If we were working with other text file, and we didn't save it,
-        the program ask us to save the file."""
-        # opens the save window
-        path = tk.filedialog.askopenfilename(
-            title='Open file', filetypes=(
-                ('Plain text file', '*.txt'),
-            )
-        )
-
-        # this runs only if the user didn't press 'cancel'
-        if path != '':
-            self.path = path
-            self.open_file_2()
-
-    @save_changes
-    def open_file_2(self):
-            # opens the specified file
-            file_ = open(self.path, 'r')
-            self.text = file_.read() # stores the text if the file
-            # to the one in the opened file
-            file_.close()
-            # updates the text display
-            self.textbox.delete(1.0, 'end')
-            self.textbox.insert(1.0, self.text)
-
-    def save_file(self):
-        """Saves the file if there is a specified location for it.
-        
-        If there is not, it calls the method save_file_as(), that ask
-        the user for a localtion to save the file.
-        """
-        if self.path != '':
-            # stores the test
-            self.text = self.textbox.get(1.0, 'end-1c')
-            # saves the file
-            file_ = open(self.path, 'w')
-            file_.write(self.text)
-            file_.close()
-            self.reset() # activates key detection
-        else:
-            self.save_file_as()
-
-    def save_file_as(self):
-        """Saves the file in a path specified by the user."""
-        path = tk.filedialog.asksaveasfilename(
-            title='Save file as',
-            filetypes=( ('Plain text file', '*.txt'),),
-            defaultextension='*.txt', initialfile='New text file'       
-        )
-        # runs only if we don't press 'cancel'
-        if path != '':
-            self.path = path # stores the path of the file
-            # stores the text
-            self.text = self.textbox.get(1.0, 'end-1c')
-            # saves the file
-            fichero = open(self.path, 'w')
-            fichero.write(self.text)
-            fichero.close()
-            self.reset() # activates key detection
-
-    @save_changes
-    def exit(self):
-        """Closes the app."""
-        self.master.quit()
 
     # events
     def detect_text_changes(self, event):
