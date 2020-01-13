@@ -54,12 +54,13 @@ class FileMenu:
 
         # this runs only if the user didn't press 'cancel'
         if path != '':
-            self.parent.path = path
+            self.path = path
             self.open_file_2()
 
     @save_changes
     def open_file_2(self):
             # opens the specified file
+            self.parent.path = self.path
             file_ = open(self.parent.path, 'r')
             self.parent.text = file_.read() # stores the text if the file
             # to the one in the opened file
