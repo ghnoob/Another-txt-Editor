@@ -43,10 +43,6 @@ class MainApplication:
         self.configure_widgets()
         self.create_widgets()
 
-        # if we close the app with the window manager, calls to the
-        # app's custom exit method
-        self.master.protocol('WM_DELETE_WINDOW', lambda: FileMenu(self).exit())
-
     def configure_widgets(self):
         """General configuration of the widgets."""
         self.configure_title()
@@ -78,17 +74,7 @@ class MainApplication:
     def create_menu(self):
         """Creates the upper menu."""
         menubar = tk.Menu(self.master)
-
-        # file menu
-        fl = FileMenu(self)
-        filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_command(label='New file', command=fl.new_file)
-        filemenu.add_command(label='Open file', command=fl.open_file)
-        filemenu.add_command(label='Save file', command=fl.save_file)
-        filemenu.add_command(label='Save file as...',command=fl.save_file_as)
-        filemenu.add_separator()
-        filemenu.add_command(label='Exit', command=fl.exit)
-        menubar.add_cascade(label='File', menu=filemenu)
+        FileMenu(self, menubar)
 
         # add the menu to the root widget
         self.master.config(menu=menubar)
@@ -103,6 +89,7 @@ class MainApplication:
         # detects key presses inside the text display and calls a method
         # that checks if the text has changed.
         self.textbox.bind('<Key>', self.detect_text_changes)
+        self.textbox.bind('<KeyRelease>', self.detect_text_changes)
         
         self.textbox.pack(fill='both', expand=1)
 
@@ -115,7 +102,7 @@ class MainApplication:
         detection.  
         """
         # compares the text before and after the key press
-        if self.text != self.textbox.get(1.0,'end'):
+        if self.text != self.textbox.get(1.0,'end-1c'):
             self.ismodified = True
             self.configure_title() # updates the title
             self.textbox.unbind(self.detect_text_changes)
@@ -128,6 +115,7 @@ class MainApplication:
         self.ismodified = False
         self.configure_title()
         self.textbox.bind('<Key>', self.detect_text_changes)
+        self.textbox.bind('<KeyRelease>', self.detect_text_changes)
 
 # runs the app
 if __name__ == '__main__':

@@ -30,15 +30,30 @@ def save_changes(function):
     return wrapper
 
 class FileMenu:
-    def __init__(self, parent):
+    def __init__(self, parent, menubar=None):
         self.parent = parent
+        self.menubar = menubar
+
+        filemenu = tk.Menu(self.menubar, tearoff=0)
+        filemenu.add_command(label='New file', command=self.new_file)
+        filemenu.add_command(label='Open file', command=self.open_file)
+        filemenu.add_command(label='Save file', command=self.save_file)
+        filemenu.add_command(label='Save file as...',command=self.save_file_as)
+        filemenu.add_separator()
+        filemenu.add_command(label='Exit', command=self.exit)
+        menubar.add_cascade(label='File', menu=filemenu)
+
+        # if we close the app with the window manager, calls to the
+        # app's custom exit method
+        self.parent.master.protocol('WM_DELETE_WINDOW', self.exit)
 
     @save_changes
     def new_file(self):
         """Creates a new text file."""
-        self.parent.text = '' # clears the text display 
-        self.parent.path = '' # resets the path
+        self.parent.text = ''
+        self.parent.path = ''
         self.parent.textbox.delete(1.0, 'end')
+        self.parent.reset()
 
     def open_file(self):
         """Opens the selected text file.
@@ -54,13 +69,13 @@ class FileMenu:
 
         # this runs only if the user didn't press 'cancel'
         if path != '':
-            self.path = path
+            self.openpath = path
             self.open_file_2()
 
     @save_changes
     def open_file_2(self):
             # opens the specified file
-            self.parent.path = self.path
+            self.parent.path = self.openpath
             file_ = open(self.parent.path, 'r')
             self.parent.text = file_.read() # stores the text if the file
             # to the one in the opened file
@@ -95,6 +110,7 @@ class FileMenu:
         )
         # runs only if we don't press 'cancel'
         if path != '':
+            self.parent.reset() # activates key detection
             self.parent.path = path # stores the path of the file
             # stores the text
             self.parent.text = self.parent.textbox.get(1.0, 'end-1c')
@@ -102,7 +118,6 @@ class FileMenu:
             fichero = open(self.parent.path, 'w')
             fichero.write(self.parent.text)
             fichero.close()
-            self.parent.reset() # activates key detection
 
     @save_changes
     def exit(self):
