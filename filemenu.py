@@ -10,7 +10,7 @@ def save_changes(function):
     When we want to close a file that has changed without saving it,
     a popup ask us if we want to save our work.
     """
-    def wrapper(self):
+    def wrapper(self, *args):
         if self.parent.path == '':
             path = 'New file'
         else:
@@ -46,6 +46,8 @@ class FileMenu:
         # if we close the app with the window manager, calls to the
         # app's custom exit method
         self.parent.master.protocol('WM_DELETE_WINDOW', self.exit)
+        # binds alt+f4 to the same method
+        self.parent.master.bind('<Alt-F4>', self.exit)
 
     @save_changes
     def new_file(self):
