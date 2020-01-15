@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.scrolledtext
 from filemenu import FileMenu
+from editmenu import EditMenu
 
 # globals
 app_name = 'Another text editor'
@@ -75,6 +76,7 @@ class MainApplication:
         """Creates the upper menu."""
         menubar = tk.Menu(self.master)
         FileMenu(self, menubar)
+        EditMenu(self, menubar)
 
         # add the menu to the root widget
         self.master.config(menu=menubar)
