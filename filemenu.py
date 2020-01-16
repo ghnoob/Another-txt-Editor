@@ -1,3 +1,5 @@
+"""Interface and commands regarding to mofication of the text files."""
+
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.filedialog
@@ -30,25 +32,43 @@ def save_changes(function):
     return wrapper
 
 class FileMenu:
+    """File menu elements and functions."""
     def __init__(self, parent, menubar=None):
         self.parent = parent
         self.menubar = menubar
+        self.create_ui()
+        self.key_shortcuts()
 
+    def create_ui(self):
         filemenu = tk.Menu(self.menubar, tearoff=0)
-        filemenu.add_command(label='New file', command=self.new_file)
-        filemenu.add_command(label='Open file', command=self.open_file)
-        filemenu.add_command(label='Save file', command=self.save_file)
-        filemenu.add_command(label='Save file as...',command=self.save_file_as)
+        filemenu.add_command(label='New file',
+                             accelerator='Ctrl+N', command=self.new_file)
+        filemenu.add_command(label='Open file...',
+                             accelerator='Ctrl+O', command=self.open_file)
+        filemenu.add_command(label='Save file',
+                             accelerator='Ctrl+S', command=self.save_file)
+        filemenu.add_command(label='Save file as...',
+                             accelerator='Ctrl+Shift+S', command=self.save_file_as)
         filemenu.add_separator()
-        filemenu.add_command(label='Exit', command=self.exit)
-        menubar.add_cascade(label='File', menu=filemenu)
+        filemenu.add_command(label='Exit',
+                             accelerator='Alt+F4', command=self.exit)
+        self.menubar.add_cascade(label='File', menu=filemenu)
 
+    def key_shortcuts(self):    
+        self.parent.master.bind('<Control-n>', self.new_file)
+        self.parent.master.bind('<Control-N>', self.new_file)
+        self.parent.master.bind('<Control-o>', self.open_file)
+        self.parent.master.bind('<Control-O>', self.open_file)
+        self.parent.master.bind('<Control-s>', self.save_file)
+        self.parent.master.bind('<Control-S>', self.save_file)
+        self.parent.master.bind('<Control-Shift-s>', self.save_file_as)
+        self.parent.master.bind('<Control-Shift-S>', self.save_file_as)
+        self.parent.master.bind('<Alt-F4>', self.exit)
         # if we close the app with the window manager, calls to the
         # app's custom exit method
         self.parent.master.protocol('WM_DELETE_WINDOW', self.exit)
-        # binds alt+f4 to the same method
-        self.parent.master.bind('<Alt-F4>', self.exit)
 
+    # menu commands
     @save_changes
     def new_file(self):
         """Creates a new text file."""
@@ -57,7 +77,7 @@ class FileMenu:
         self.parent.textbox.delete(1.0, 'end')
         self.parent.reset()
 
-    def open_file(self):
+    def open_file(self, *args):
         """Opens the selected text file.
 
         If we were working with other text file, and we didn't save it,
@@ -86,7 +106,7 @@ class FileMenu:
             self.parent.textbox.delete(1.0, 'end')
             self.parent.textbox.insert(1.0, self.parent.text)
 
-    def save_file(self):
+    def save_file(self, *args):
         """Saves the file if there is a specified location for it.
         
         If there is not, it calls the method save_file_as(), that ask
@@ -103,10 +123,10 @@ class FileMenu:
         else:
             self.save_file_as()
 
-    def save_file_as(self):
+    def save_file_as(self, *args):
         """Saves the file in a path specified by the user."""
         path = tk.filedialog.asksaveasfilename(
-            title='Save file as',
+            title='Save file as...',
             filetypes=( ('Plain text file', '*.txt'),),
             defaultextension='*.txt', initialfile='New text file'       
         )

@@ -22,25 +22,25 @@ class EditMenu:
         editmenu = tk.Menu(self.menubar, tearoff=0)
         
         editmenu.add_command(
-            label='Cut',
+            label='Cut', accelerator='Ctrl+X',
             command=lambda:self.parent.textbox.event_generate('<<Cut>>')
         )
         editmenu.add_command(
-            label='Copy',
+            label='Copy', accelerator='Ctrl+C',
             command=lambda:self.parent.textbox.event_generate('<<Copy>>')
         )
         editmenu.add_command(
-            label='Paste',
+            label='Paste', accelerator='Ctrl+V',
             command=lambda:self.parent.textbox.event_generate('<<Paste>>')
         )
         editmenu.add_separator()
         editmenu.add_command(
-            label='Select all',
+            label='Select all', accelerator='Ctrl+A',
             command=lambda:self.parent.textbox.event_generate('<<SelectAll>>')
         )
         editmenu.add_command(
-            label='Delete',
+            label='Delete', accelerator='Del',
             command=lambda:self.parent.textbox.event_generate('<<Clear>>')
         )
         
-        menubar.add_cascade(label='Edit', menu=editmenu)
+        self.menubar.add_cascade(label='Edit', menu=editmenu)
