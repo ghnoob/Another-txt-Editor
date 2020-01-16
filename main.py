@@ -88,36 +88,31 @@ class MainApplication:
             self.master, font=('Consolas', 12), pady=5, padx=5
         )
 
-        # detects key presses inside the text display and calls a method
-        # that checks if the text has changed.
-        self.textbox.bind('<Key>', self.detect_text_changes)
-        self.textbox.bind('<KeyRelease>', self.detect_text_changes)
+        # detects if the text was modified
+        self.textbox.bind('<<Modified>>', self.on_modification)
         
         self.textbox.pack(fill='both', expand=1)
 
     # events
-    def detect_text_changes(self, event):
-        """Detects if the text has changed.
-        
-        When the key detection is on, it is called when we press a key.    
-        When it detects that the text has changes, deactivates key
-        detection.  
+    def on_modification(self, event):
+        """Called if the contents of the text widget are modified.
+
+        Sets a flag that signals that the text was modified to True and
+        adds an asterisk (*) to thr file name in the window title to
+        notify that to the user. 
         """
-        # compares the text before and after the key press
-        if self.text != self.textbox.get(1.0,'end-1c'):
-            self.ismodified = True
-            self.configure_title() # updates the title
-            self.textbox.unbind(self.detect_text_changes)
-            # deactivates key detection
+        self.ismodified = True
+        self.configure_title() # updates the title
 
     def reset(self):    
-        """Resets the variable that controls if the text was modified,
-        the title of the app in the window manager and activtes the
-        key detection."""
+        """Called when a new file is opened.
+        
+        Sets the flag that that signals that the text was modified to
+        False and deleted the asterisk (*) in the window title if there
+        is one, to notify the user that the text is unchanged.
+        """
         self.ismodified = False
         self.configure_title()
-        self.textbox.bind('<Key>', self.detect_text_changes)
-        self.textbox.bind('<KeyRelease>', self.detect_text_changes)
 
 # runs the app
 if __name__ == '__main__':
