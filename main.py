@@ -30,7 +30,6 @@ class MainApplication:
             path (str): stores the path of the file we are editing.
             text (str): stores the text of the file we open before editing
             it to compare it to the text after editing.
-            ismodified (bool): True if the text file was modified
         """
         # arguments
         self.master = master
@@ -38,17 +37,12 @@ class MainApplication:
         # attributes
         self.path = ''
         self.text = ''
-        self.ismodified = False
 
         # call methods
-        self.configure_widgets()
         self.create_widgets()
-
-    def configure_widgets(self):
-        """General configuration of the widgets."""
         self.configure_title()
 
-    def configure_title(self):
+    def configure_title(self, *args):
         """Configures the app title in the window manager.
         
         It shows the app name with the path to the file we are editing
@@ -60,7 +54,7 @@ class MainApplication:
         else:
             path = self.path
         
-        if self.ismodified:
+        if self.textbox.edit_modified():
             mod = ' *'
         else:
             mod = ''
@@ -69,8 +63,8 @@ class MainApplication:
     
     def create_widgets(self):
         """Calls the methods that create the widgets of the app."""
-        self.create_menu()
         self.create_textbox()
+        self.create_menu()
 
     def create_menu(self):
         """Creates the upper menu."""
@@ -88,31 +82,18 @@ class MainApplication:
             self.master, font=('Consolas', 12), pady=5, padx=5
         )
 
-        # detects if the text was modified
-        self.textbox.bind('<<Modified>>', self.on_modification)
+        # changes the title when the text os modified
+        self.textbox.bind('<<Modified>>', self.configure_title)
         
         self.textbox.pack(fill='both', expand=1)
-
-    # events
-    def on_modification(self, event):
-        """Called if the contents of the text widget are modified.
-
-        Sets a flag that signals that the text was modified to True and
-        adds an asterisk (*) to thr file name in the window title to
-        notify that to the user. 
-        """
-        self.ismodified = True
-        self.configure_title() # updates the title
 
     def reset(self):    
         """Called when a new file is opened.
         
         Sets the flag that that signals that the text was modified to
-        False and deleted the asterisk (*) in the window title if there
-        is one, to notify the user that the text is unchanged.
+        False.
         """
-        self.ismodified = False
-        self.configure_title()
+        self.textbox.edit_modified(False)
 
 # runs the app
 if __name__ == '__main__':

@@ -3,7 +3,6 @@
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.filedialog
-from functools import partial
 
 # decorator
 def save_changes(function):
@@ -14,7 +13,7 @@ def save_changes(function):
         else:
             path = self.parent.path
             
-        if self.parent.ismodified:
+        if self.parent.textbox.edit_modified():
             s = tkinter.messagebox.askyesnocancel(
                 title='Unsaved changes',
                 message=f'Do you want to save the changes made in\n"{path}"?'
@@ -25,7 +24,7 @@ def save_changes(function):
             elif s is None:
                 return
         function(self)
-        self.parent.reset()
+        self.parent.textbox.edit_modified(False)
     return wrapper
 
 class FileMenu:
@@ -111,7 +110,6 @@ class FileMenu:
         # updates the text display
         self.parent.textbox.delete(1.0, 'end')
         self.parent.textbox.insert(1.0, self.parent.text)
-        print(self.parent.ismodified)
 
     def save_file(self, *args):
         """Saves the file if there is a specified location for it.
@@ -126,7 +124,7 @@ class FileMenu:
             file_ = open(self.parent.path, 'w')
             file_.write(self.parent.text)
             file_.close()
-            self.parent.reset()
+            self.parent.textbox.edit_modified(False)
         else:
             self.save_file_as()
 
@@ -146,7 +144,7 @@ class FileMenu:
             file_ = open(self.parent.path, 'w')
             file_.write(self.parent.text)
             file_.close()
-            self.parent.reset()
+            self.parent.textbox.edit_modified(False)
 
     @save_changes
     def exit(self):
