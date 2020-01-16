@@ -22,6 +22,15 @@ class EditMenu:
         editmenu = tk.Menu(self.menubar, tearoff=0)
         
         editmenu.add_command(
+            label='Undo', accelerator='Ctrl+Z',
+            command=lambda: self.parent.textbox.event_generate('<<Undo>>')
+        )
+        editmenu.add_command(
+            label='Redo', accelerator='Ctrl+Y',
+        command=lambda: self.parent.textbox.event_generate('<<Redo>>')
+        )
+        editmenu.add_separator()
+        editmenu.add_command(
             label='Cut', accelerator='Ctrl+X',
             command=lambda:self.parent.textbox.event_generate('<<Cut>>')
         )

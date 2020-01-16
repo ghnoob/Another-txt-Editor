@@ -79,14 +79,28 @@ class MainApplication:
         """Creates the text display"""
         
         self.textbox = tk.scrolledtext.ScrolledText(
-            self.master, font=('Consolas', 12), pady=5, padx=5
+            self.master, font=('Consolas', 12), pady=5, padx=5, undo=True
         )
 
         # changes the title when the text os modified
-        self.textbox.bind('<<Modified>>', self.configure_title)
+        self.textbox.bind('<<Modified>>', self.on_modification)
+        # adds a separator to the undo stack if the user presses space
+        self.textbox.bind('<space>', lambda event:self.textbox.edit_separator())
         
         self.textbox.pack(fill='both', expand=1)
 
+    def on_modification(self, event):
+        """Called when the text display modified flag changes.
+        
+        If the flag is False, clears the undo stack so the user can't
+        undo an action made in a file after opening another.
+        Also updates the window title, to show an asterisk if the flag
+        is True or not if it is False
+        """
+        if self.textbox.edit_modified() == 0:
+            self.textbox.edit_reset()
+        self.configure_title()
+    
     def reset(self):    
         """Called when a new file is opened.
         
