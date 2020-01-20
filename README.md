@@ -6,7 +6,7 @@ Currently is very limited, but it works for create, open and save files.
 **TODO:**
 * Add more functionalities
 * Add user custom options
-<del>* Split the large code in smaller files</del>
+* <del>Split the large code in smaller files</del>
 * Add Spanish language support
 
 ## Licensing
