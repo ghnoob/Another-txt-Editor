@@ -3,7 +3,7 @@
 import tkinter as tk
 
 class EditMenu:
-    """The 'Edit' menu on the menu bar.
+    """'Edit' menu graphic elements and functionalities.
     
     Parameters:
         parent (main.MainApplication): an instance of the app
