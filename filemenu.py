@@ -3,6 +3,7 @@
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.filedialog
+from simplebinds import bind_
 
 # decorator
 def save_changes(function):
@@ -32,24 +33,21 @@ class FileMenu:
     
     Arguments:
         parent (main.MainApplication): an instance of the app
-        menubar: (tk.Menu): the app's menubar
     """
-    def __init__(self, parent, menubar=None):
+    def __init__(self, parent):
         """Calls methods that create the menu buttons and binds key
         shorcuts to them.
         
         Arguments:
             parent (main.MainApplication): an instance of the app
-            menubar: (tk.Menu): the app's menubar
         """
         self.parent = parent
-        self.menubar = menubar
         self.create_ui()
         self.key_shortcuts()
 
     def create_ui(self):
         """Creates the file menu buttons."""
-        filemenu = tk.Menu(self.menubar, tearoff=0)
+        filemenu = tk.Menu(self.parent.menubar, tearoff=0)
         filemenu.add_command(label='New file',
                              accelerator='Ctrl+N', command=self.new_file)
         filemenu.add_command(label='Open file...',
@@ -61,19 +59,15 @@ class FileMenu:
         filemenu.add_separator()
         filemenu.add_command(label='Exit',
                              accelerator='Alt+F4', command=self.exit)
-        self.menubar.add_cascade(label='File', menu=filemenu)
+        self.parent.menubar.add_cascade(label='File', menu=filemenu)
 
     def key_shortcuts(self):
         """Adds key bindings to the file menu buttons."""
-        self.parent.master.bind('<Control-n>', self.new_file)
-        self.parent.master.bind('<Control-N>', self.new_file)
-        self.parent.master.bind('<Control-o>', self.open_file)
-        self.parent.master.bind('<Control-O>', self.open_file)
-        self.parent.master.bind('<Control-s>', self.save_file)
-        self.parent.master.bind('<Control-S>', self.save_file)
-        self.parent.master.bind('<Control-Shift-s>', self.save_file_as)
-        self.parent.master.bind('<Control-Shift-S>', self.save_file_as)
-        self.parent.master.bind('<Alt-F4>', self.exit)
+        bind_(self.parent.master, 'Control', 'n', self.new_file)
+        bind_(self.parent.master, 'Control', 'o', self.open_file)
+        bind_(self.parent.master, 'Control', 's', self.save_file)
+        bind_(self.parent.master, 'Control-Shift', 's', self.save_file_as)
+        self.parent.master.bind('<Alt-F4>',self.exit)
         # if we close the app with the window manager, calls to the
         # app's custom exit method
         self.parent.master.protocol('WM_DELETE_WINDOW', self.exit)

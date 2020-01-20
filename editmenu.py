@@ -7,17 +7,14 @@ class EditMenu:
     
     Parameters:
         parent (main.MainApplication): an instance of the app
-        menubar (tkinter.Menu): app's menubar
     """
-    def __init__(self, parent, menubar):
+    def __init__(self, parent):
         """Adds the edit menu to the menu bar.
         
         Parameters:
             parent (main.MainApplication): an instance of the app
-            menubar (tkinter.Menu): app's menubar
         """
         self.parent = parent
-        self.menubar = menubar
 
         self.create_menu_buttons()
         self.grey_out()
@@ -25,7 +22,7 @@ class EditMenu:
 
     def create_menu_buttons(self):
         """Creates the menu buttons for the edit menu."""
-        self.editmenu = tk.Menu(self.menubar, tearoff=0)
+        self.editmenu = tk.Menu(self.parent.menubar, tearoff=0)
         
         self.editmenu.add_command(
             label='Undo', accelerator='Ctrl+Z',
@@ -58,7 +55,7 @@ class EditMenu:
             command=lambda:self.parent.textbox.event_generate('<<Clear>>')
         )
         
-        self.menubar.add_cascade(label='Edit', menu=self.editmenu)
+        self.parent.menubar.add_cascade(label='Edit', menu=self.editmenu)
 
     def grey_out(self):
         """Disables cut, copy, and delete buttons if there is not text selected."""

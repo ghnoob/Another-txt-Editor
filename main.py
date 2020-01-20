@@ -68,12 +68,12 @@ class MainApplication:
 
     def create_menu(self):
         """Creates the upper menu."""
-        menubar = tk.Menu(self.master)
-        FileMenu(self, menubar)
-        EditMenu(self, menubar)
+        self.menubar = tk.Menu(self.master)
+        FileMenu(self)
+        EditMenu(self)
 
         # add the menu to the root widget
-        self.master.config(menu=menubar)
+        self.master.config(menu=self.menubar)
 
     def create_textbox(self):
         """Creates the text display"""
