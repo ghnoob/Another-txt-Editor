@@ -29,7 +29,7 @@ def save_changes(function):
     return wrapper
 
 class FileMenu:
-    """File menu elements and functions.
+    """'File' menu GUI elements and functionalities.
     
     Arguments:
         parent (main.MainApplication): an instance of the app

@@ -1,7 +1,10 @@
+"""Main file of the app."""
+
 import tkinter as tk
 import tkinter.scrolledtext
 from filemenu import FileMenu
 from editmenu import EditMenu
+from configmenu import ConfigMenu
 
 # globals
 app_name = 'Another text editor'
@@ -10,7 +13,7 @@ app_name = 'Another text editor'
 class MainApplication:
     """Main window of the app.
     
-    Parameters:
+    Arguments:
         master (tkinter,Tk): root widget of the app.
 
     Attributes:
@@ -23,7 +26,7 @@ class MainApplication:
     def __init__(self, master):
         """Calls methods that create and configure the widgets.
         
-        Parameters:
+        Arguments:
             master (tkinter.Tk): the root widget if the app.
 
         Attributes:
@@ -71,6 +74,7 @@ class MainApplication:
         self.menubar = tk.Menu(self.master)
         FileMenu(self)
         EditMenu(self)
+        ConfigMenu(self)
 
         # add the menu to the root widget
         self.master.config(menu=self.menubar)
@@ -79,7 +83,7 @@ class MainApplication:
         """Creates the text display"""
         
         self.textbox = tk.scrolledtext.ScrolledText(
-            self.master, font=('Consolas', 12), pady=5, padx=5, undo=True
+            self.master, pady=5, padx=5, undo=True
         )
 
         # changes the title when the text os modified
