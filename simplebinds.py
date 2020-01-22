@@ -18,7 +18,7 @@ def bind_(widget, modifier, key, callback):
 
     Binds both uppercase and lowercase keys.
     
-    Parameters:
+    Arguments:
         widget (tkinter): a tkinter widget
         modifier (str): a modifier key - Control, Shift, Alt, etc.
         key (str): a letter key

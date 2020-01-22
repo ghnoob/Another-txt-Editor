@@ -5,13 +5,13 @@ import tkinter as tk
 class EditMenu:
     """'Edit' menu graphic elements and functionalities.
     
-    Parameters:
+    Arguments:
         parent (main.MainApplication): an instance of the app
     """
     def __init__(self, parent):
         """Adds the edit menu to the menu bar.
         
-        Parameters:
+        Arguments:
             parent (main.MainApplication): an instance of the app
         """
         self.parent = parent
