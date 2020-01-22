@@ -12,11 +12,11 @@ _Note: I only tested it on Windows._
 * Add Spanish language support
 
 ## Install requeriments
-tkfontchooser
+tkfontchooser  
 `pip install tkfontchooser`
 
 ## Licensing
-Released under public domain. See `LICENSE` for details.
+This project is released under GNU GPL v3.0. See `LICENSE` for details.
 
 ## About the autor
 **Rodrigo Pietnechuk**
