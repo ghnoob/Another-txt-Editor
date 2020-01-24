@@ -113,8 +113,9 @@ class ConfigMenu:
 
         self.parent.textbox.config(
             bg=self.config['Background'].get('bg', 'white'),
-            fg=self.config['Font'].get('color', 'black'), font=tkfont,
-            wrap=self.wrapping.get()
+            fg=self.config['Font'].get('color', 'black'),
+            insertbackground=self.config['Font'].get('color', 'black'),
+            font=tkfont, wrap=self.wrapping.get()
         )
     
     @save_cfg
