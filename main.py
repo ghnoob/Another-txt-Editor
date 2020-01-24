@@ -80,18 +80,31 @@ class MainApplication:
         self.master.config(menu=self.menubar)
 
     def create_textbox(self):
-        """Creates the text display"""
-        
-        self.textbox = tk.scrolledtext.ScrolledText(
-            self.master, pady=5, padx=5, undo=True
-        )
+        """Creates the text display and scroll bars."""
+        textframe = tk.Frame()
 
-        # changes the title when the text os modified
+        self.textbox = tk.Text(textframe, pady=5, padx=5, undo=True)
+
+        yscrollbar = tk.Scrollbar(textframe, command=self.textbox.yview)
+        # this bar will be added to the grid only if wrapping is inactive
+        # see editmenu.EditMenu.set_scrollbar()
+        self.xscrollbar = tk.Scrollbar(textframe, orient='horizontal',
+                                       command=self.textbox.xview)
+
+        self.textbox.config(yscrollcommand=yscrollbar.set,
+                            xscrollcommand=self.xscrollbar.set)
+        
+        # changes the title when the text is modified
         self.textbox.bind('<<Modified>>', self.on_modification)
         # adds a separator to the undo stack if the user presses space
         self.textbox.bind('<space>', lambda event:self.textbox.edit_separator())
         
-        self.textbox.pack(fill='both', expand=1)
+        self.textbox.grid(row=0, column=0, sticky='nsew')
+        yscrollbar.grid(row=0, column=1, sticky='ns')
+        textframe.grid_rowconfigure(0, weight=1)
+        textframe.grid_columnconfigure(0, weight=1)
+
+        textframe.pack(fill='both', expand=1)
 
     def on_modification(self, event):
         """Called when the text display modified flag changes.

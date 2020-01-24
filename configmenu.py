@@ -117,12 +117,26 @@ class ConfigMenu:
             insertbackground=self.config['Font'].get('color', 'black'),
             font=tkfont, wrap=self.wrapping.get()
         )
+
+        self.set_scrollbar()
+
+    def set_scrollbar(self):
+        """Controls the horizontal scrollbar of the text display.
+        
+        It hides the scrollbar if the text wrapping is activated and
+        shows it if wrapping is not activated.
+        """
+        if self.wrapping.get() == 'none':
+            self.parent.xscrollbar.grid(row=1, column=0, sticky='ew')
+        else:
+            self.parent.xscrollbar.grid_forget()
     
     @save_cfg
     def set_wrapping(self):
         """Changes the text wrapping."""
         self.parent.textbox.config(wrap=self.wrapping.get())
         self.config['Wrapping']['wrap'] = self.wrapping.get()
+        self.set_scrollbar()
 
     @save_cfg
     def change_font(self):
