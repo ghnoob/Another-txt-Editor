@@ -5,9 +5,7 @@ import tkinter.scrolledtext
 from filemenu import FileMenu
 from editmenu import EditMenu
 from configmenu import ConfigMenu
-
-# globals
-app_name = 'Another text editor'
+from helpmenu import HelpMenu
 
 # UI
 class MainApplication:
@@ -62,7 +60,7 @@ class MainApplication:
         else:
             mod = ''
         
-        self.master.title(f"{path}{mod} - {app_name}")
+        self.master.title(f"{path}{mod} - Another txt Editor")
     
     def create_widgets(self):
         """Calls the methods that create the widgets of the app."""
@@ -75,6 +73,7 @@ class MainApplication:
         FileMenu(self)
         EditMenu(self)
         ConfigMenu(self)
+        HelpMenu(self)
 
         # add the menu to the root widget
         self.master.config(menu=self.menubar)
@@ -118,7 +117,7 @@ class MainApplication:
             self.textbox.edit_reset()
         self.configure_title()
     
-    def reset(self):    
+    def reset(self):
         """Called when a new file is opened.
         
         Sets the flag that that signals that the text was modified to
