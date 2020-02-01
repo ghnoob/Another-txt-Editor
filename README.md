@@ -1,18 +1,14 @@
 # Another txt editor
 
+Source code: https://github.com/ghnoob/Another-txt-Editor
+
 I decided to create a plain text editor to test my skills with tkinter.  
-Currently is very limited, but it works for create, open and save files.
+Limited, but working on new features.
 
-_Note: I only tested it on Windows._
+_Note: I only tested it on Windows._`
 
-**TODO:**
-* Add more functionalities
-* <del>Add user custom options</del>
-* <del>Split the large code in smaller files</del>
-* Add Spanish language support
-
-## Install requeriments
-tkfontchooser  
+## Install requisites
+tkfontchooser
 `pip install tkfontchooser`
 
 ## Licensing
