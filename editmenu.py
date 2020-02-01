@@ -57,6 +57,17 @@ class EditMenu:
         
         self.main.menubar.add_cascade(label='Edit', menu=self.editmenu)
 
+        # contextual menu
+        self.main.textbox.bind(
+            '<Button-3>',
+            lambda event: self.editmenu.post(event.x_root, event.y_root)
+        )
+        self.main.textbox.bind(
+            '<App>', lambda event: self.editmenu.post(
+                self.main.master.winfo_rootx(), self.main.master.winfo_rooty()
+            )
+        )
+
     def grey_out(self):
         """Disables cut, copy, and delete buttons if there is not text selected."""
         entries = [3, 4, 8]
