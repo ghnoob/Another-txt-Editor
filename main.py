@@ -14,7 +14,7 @@ class MainApplication:
     """Main window of the app.
     
     Arguments:
-        master (tkinter,Tk): root widget of the app.
+        master (tkinter.Tk): root widget of the app.
 
     Attributes:
         path (str): stores the path of the file we are editing.

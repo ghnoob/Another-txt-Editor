@@ -9,12 +9,12 @@ from simplebinds import bind_
 def save_changes(function):
     """Asks the user to save their unsaved changes in a text document."""
     def wrapper(self, *args):
-        if self.parent.path == '':
+        if self.main.path == '':
             path = 'New file'
         else:
-            path = self.parent.path
+            path = self.main.path
             
-        if self.parent.textbox.edit_modified():
+        if self.main.textbox.edit_modified():
             s = tkinter.messagebox.askyesnocancel(
                 title='Unsaved changes',
                 message=f'Do you want to save the changes made in\n"{path}"?'
@@ -25,29 +25,29 @@ def save_changes(function):
             elif s is None:
                 return
         function(self)
-        self.parent.textbox.edit_modified(False)
+        self.main.textbox.edit_modified(False)
     return wrapper
 
 class FileMenu:
     """'File' menu GUI elements and functionalities.
     
     Arguments:
-        parent (main.MainApplication): an instance of the app
+        main (main.MainApplication): an instance of the main class
     """
-    def __init__(self, parent):
+    def __init__(self, main):
         """Calls methods that create the menu buttons and binds key
         shorcuts to them.
         
         Arguments:
-            parent (main.MainApplication): an instance of the app
+            main (main.MainApplication): an instance of the main class
         """
-        self.parent = parent
+        self.main = main
         self.create_ui()
         self.key_shortcuts()
 
     def create_ui(self):
         """Creates the file menu buttons."""
-        filemenu = tk.Menu(self.parent.menubar, tearoff=0)
+        filemenu = tk.Menu(self.main.menubar, tearoff=0)
         filemenu.add_command(label='New file',
                              accelerator='Ctrl+N', command=self.new_file)
         filemenu.add_command(label='Open file...',
@@ -59,26 +59,26 @@ class FileMenu:
         filemenu.add_separator()
         filemenu.add_command(label='Exit',
                              accelerator='Alt+F4', command=self.exit)
-        self.parent.menubar.add_cascade(label='File', menu=filemenu)
+        self.main.menubar.add_cascade(label='File', menu=filemenu)
 
     def key_shortcuts(self):
         """Adds key bindings to the file menu buttons."""
-        bind_(self.parent.master, 'Control', 'n', self.new_file)
-        bind_(self.parent.master, 'Control', 'o', self.open_file)
-        bind_(self.parent.master, 'Control', 's', self.save_file)
-        bind_(self.parent.master, 'Control-Shift', 's', self.save_file_as)
-        self.parent.master.bind('<Alt-F4>',self.exit)
+        bind_(self.main.master, 'Control', 'n', self.new_file)
+        bind_(self.main.master, 'Control', 'o', self.open_file)
+        bind_(self.main.master, 'Control', 's', self.save_file)
+        bind_(self.main.master, 'Control-Shift', 's', self.save_file_as)
+        self.main.master.bind('<Alt-F4>',self.exit)
         # if we close the app with the window manager, calls to the
         # app's custom exit method
-        self.parent.master.protocol('WM_DELETE_WINDOW', self.exit)
+        self.main.master.protocol('WM_DELETE_WINDOW', self.exit)
 
     # menu commands
     @save_changes
     def new_file(self):
         """Creates a new text file."""
-        self.parent.text = ''
-        self.parent.path = ''
-        self.parent.textbox.delete(1.0, 'end')
+        self.main.text = ''
+        self.main.path = ''
+        self.main.textbox.delete(1.0, 'end')
 
     def open_file(self, *args):
         """Asks the user to a file location, to open that file."""
@@ -97,13 +97,13 @@ class FileMenu:
     @save_changes
     def open_file_2(self):
         """Opens the selected file."""
-        self.parent.path = self.openpath
-        file_ = open(self.parent.path, 'r')
-        self.parent.text = file_.read() # stores the text of the file
+        self.main.path = self.openpath
+        file_ = open(self.main.path, 'r')
+        self.main.text = file_.read() # stores the text of the file
         file_.close()
         # updates the text display
-        self.parent.textbox.delete(1.0, 'end')
-        self.parent.textbox.insert(1.0, self.parent.text)
+        self.main.textbox.delete(1.0, 'end')
+        self.main.textbox.insert(1.0, self.main.text)
 
     def save_file(self, *args):
         """Saves the file if there is a specified location for it.
@@ -111,14 +111,14 @@ class FileMenu:
         If there is not, it calls the method save_file_as(), that ask
         the user for a localtion to save the file.
         """
-        if self.parent.path != '':
+        if self.main.path != '':
             # stores the test
-            self.parent.text = self.parent.textbox.get(1.0, 'end-1c')
+            self.main.text = self.main.textbox.get(1.0, 'end-1c')
             # saves the file
-            file_ = open(self.parent.path, 'w')
-            file_.write(self.parent.text)
+            file_ = open(self.main.path, 'w')
+            file_.write(self.main.text)
             file_.close()
-            self.parent.textbox.edit_modified(False)
+            self.main.textbox.edit_modified(False)
         else:
             self.save_file_as()
 
@@ -131,16 +131,16 @@ class FileMenu:
         )
         # runs only if we don't press 'cancel'
         if path != '':
-            self.parent.path = path # stores the path of the file
+            self.main.path = path # stores the path of the file
             # stores the text
-            self.parent.text = self.parent.textbox.get(1.0, 'end-1c')
+            self.main.text = self.main.textbox.get(1.0, 'end-1c')
             # saves the file
-            file_ = open(self.parent.path, 'w')
-            file_.write(self.parent.text)
+            file_ = open(self.main.path, 'w')
+            file_.write(self.main.text)
             file_.close()
-            self.parent.textbox.edit_modified(False)
+            self.main.textbox.edit_modified(False)
 
     @save_changes
     def exit(self):
         """Closes the app."""
-        self.parent.master.quit()
+        self.main.master.quit()

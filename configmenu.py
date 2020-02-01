@@ -49,22 +49,22 @@ class ConfigMenu:
     """'Config' menu GUI elements and functionalities.
     
     Arguments:
-        parent (main.MainApplication): an instance of the app
+        main (main.MainApplication): an instance of the main class
     """
-    def __init__(self, parent):
+    def __init__(self, main):
         """Creates the config menu.
         
         Arguments:
-            parent (main.MainApplication): an instance of the app.
+            main (main.MainApplication): an instance of the main class.
         """
-        self.parent = parent
+        self.main = main
     
         self.load_config()
         self.create_gui()
     
     def create_gui(self):
         """Creates the config menu GUI elements."""
-        configmenu = tk.Menu(self.parent.menubar, tearoff=False)
+        configmenu = tk.Menu(self.main.menubar, tearoff=False)
 
         radiobuttons = {'Do not wrap the text': 'none',
                         'Wrap characters': 'char',
@@ -83,7 +83,7 @@ class ConfigMenu:
         configmenu.add_command(label='Change background color...',
                                command=self.set_background)
 
-        self.parent.menubar.add_cascade(label='Config', menu=configmenu)    
+        self.main.menubar.add_cascade(label='Config', menu=configmenu)    
 
     def load_config(self):
         """Loads the cfg file and configs the UI accordingly.
@@ -102,7 +102,7 @@ class ConfigMenu:
         self.wrapping = tk.StringVar(value=self.config['Wrapping'].get('wrap', 'none'))
 
         tkfont = tk.font.Font(
-            self.parent.master,
+            self.main.master,
             family=self.config['Font'].get('family', 'Consolas'),
             size=self.config.getint('Font', 'size', fallback=12),
             weight=self.config['Font'].get('weight', 'normal'),
@@ -111,7 +111,7 @@ class ConfigMenu:
             overstrike=self.config.getboolean('Font', 'overstrike', fallback=0)
         )
 
-        self.parent.textbox.config(
+        self.main.textbox.config(
             bg=self.config['Background'].get('bg', 'white'),
             fg=self.config['Font'].get('color', 'black'),
             insertbackground=self.config['Font'].get('color', 'black'),
@@ -127,27 +127,27 @@ class ConfigMenu:
         shows it if wrapping is not activated.
         """
         if self.wrapping.get() == 'none':
-            self.parent.xscrollbar.grid(row=1, column=0, sticky='ew')
+            self.main.xscrollbar.grid(row=1, column=0, sticky='ew')
         else:
-            self.parent.xscrollbar.grid_forget()
+            self.main.xscrollbar.grid_forget()
     
     @save_cfg
     def set_wrapping(self):
         """Changes the text wrapping."""
-        self.parent.textbox.config(wrap=self.wrapping.get())
+        self.main.textbox.config(wrap=self.wrapping.get())
         self.config['Wrapping']['wrap'] = self.wrapping.get()
         self.set_scrollbar()
 
     @save_cfg
     def change_font(self):
-        font = tkfontchooser.askfont(self.parent.master)
+        font = tkfontchooser.askfont(self.main.master)
         if font:
             tkfont = tk.font.Font(
-                self.parent.master, family=font['family'], size=font['size'],
+                self.main.master, family=font['family'], size=font['size'],
                 weight=font['weight'], slant=font['slant'],
                 underline=font['underline'], overstrike=font['overstrike']
             )
-            self.parent.textbox.config(font=tkfont)
+            self.main.textbox.config(font=tkfont)
 
             for key, value in font.items():
                 self.config['Font'][str(key)] = str(value)
@@ -160,7 +160,7 @@ class ConfigMenu:
         Arguments:
             color (str): hexadecimal color code
         """
-        self.parent.textbox.config(fg=color, insertbackground=color)
+        self.main.textbox.config(fg=color, insertbackground=color)
         self.config['Font']['color'] = color
     
     @pick_color
@@ -171,5 +171,5 @@ class ConfigMenu:
         Arguments:
             color (str): hexadecimal color code.
         """
-        self.parent.textbox.config(bg=color)
+        self.main.textbox.config(bg=color)
         self.config['Background']['bg'] = color
