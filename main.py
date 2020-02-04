@@ -1,7 +1,9 @@
 """Main file of the app."""
 
 import tkinter as tk
-import tkinter.scrolledtext
+import tkinter.ttk as ttk
+
+from customtext import CustomText
 from filemenu import FileMenu
 from editmenu import EditMenu
 from configmenu import ConfigMenu
@@ -65,6 +67,7 @@ class MainApplication:
     def create_widgets(self):
         """Calls the methods that create the widgets of the app."""
         self.create_textbox()
+        self.create_statusbar()
         self.create_menu()
 
     def create_menu(self):
@@ -82,7 +85,7 @@ class MainApplication:
         """Creates the text display and scroll bars."""
         textframe = tk.Frame()
 
-        self.textbox = tk.Text(textframe, pady=5, padx=5, undo=True)
+        self.textbox = CustomText(textframe, pady=5, padx=5, undo=True)
 
         yscrollbar = tk.Scrollbar(textframe, command=self.textbox.yview)
         # this bar will be added to the grid only if wrapping is inactive
@@ -97,13 +100,41 @@ class MainApplication:
         self.textbox.bind('<<Modified>>', self.on_modification)
         # adds a separator to the undo stack if the user presses space
         self.textbox.bind('<space>', lambda event:self.textbox.edit_separator())
+
+        # updates the status bar
+        self.textbox.bind('<<CursorChange>>', lambda event: self.set_ln_col())
         
+        # managing geometry
         self.textbox.grid(row=0, column=0, sticky='nsew')
         yscrollbar.grid(row=0, column=1, sticky='ns')
         textframe.grid_rowconfigure(0, weight=1)
         textframe.grid_columnconfigure(0, weight=1)
 
         textframe.pack(fill='both', expand=1)
+
+        self.textbox.focus_set() # sets the focus
+
+    def create_statusbar(self):
+        """Crates a status bar that indicates text cursor position."""
+        self.status_frame = ttk.Frame()
+
+        self.line = tk.IntVar(self.master)
+        self.column = tk.IntVar(self.master)
+        
+        ttk.Label(self.status_frame, text='Ln: ').pack(side='left')
+        self.lnlabel = ttk.Label(self.status_frame, textvariable=self.line)
+        self.lnlabel.pack(side='left')
+        ttk.Label(self.status_frame, text='    Col: ').pack(side='left')
+        self.collabel = ttk.Label(self.status_frame, textvariable=self.column)
+        self.collabel.pack(side='left')
+
+        self.set_ln_col() # updates de bar once is created
+
+    def set_ln_col(self):
+        """Updates the status bar values."""
+        ln, col = self.textbox.index('insert').split('.')
+        self.line.set(ln)
+        self.column.set(col)
 
     def on_modification(self, event):
         """Called when the text display modified flag changes.

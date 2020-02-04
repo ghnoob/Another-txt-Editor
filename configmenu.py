@@ -66,6 +66,12 @@ class ConfigMenu:
         """Creates the config menu GUI elements."""
         configmenu = tk.Menu(self.main.menubar, tearoff=False)
 
+        configmenu.add_checkbutton(
+            label='Show status bar', variable=self.show_status_bar,
+            command=self.set_statusbar
+        )
+        configmenu.add_separator()
+
         radiobuttons = {'Do not wrap the text': 'none',
                         'Wrap characters': 'char',
                         'Wrap words': 'word'}
@@ -93,13 +99,18 @@ class ConfigMenu:
         self.config = configparser.ConfigParser()
         self.config.read('config.cfg')
         
-        sections = ['Background', 'Wrapping', 'Font']
+        sections = ['Background', 'View', 'Font']
         
         for s in sections:
             if self.config.has_section(s) is False:
                 self.config.add_section(s)
 
-        self.wrapping = tk.StringVar(value=self.config['Wrapping'].get('wrap', 'none'))
+        self.show_status_bar = tk.BooleanVar(
+            self.main.master, value=self.config.getboolean(
+                'View', 'show_status_bar', fallback=1
+            )
+        )
+        self.wrapping = tk.StringVar(value=self.config['View'].get('wrap', 'none'))
 
         tkfont = tk.font.Font(
             self.main.master,
@@ -119,6 +130,7 @@ class ConfigMenu:
         )
 
         self.set_scrollbar()
+        self.set_statusbar()
 
     def set_scrollbar(self):
         """Controls the horizontal scrollbar of the text display.
@@ -130,12 +142,25 @@ class ConfigMenu:
             self.main.xscrollbar.grid(row=1, column=0, sticky='ew')
         else:
             self.main.xscrollbar.grid_forget()
+
+    @save_cfg
+    def set_statusbar(self):
+        """Shows the statusbar if the option to show it is on.
+        
+        Else, it hides it.
+        """
+        self.config['View']['show_status_bar'] = str(self.show_status_bar.get())
+        
+        if self.show_status_bar.get():
+            self.main.status_frame.pack(fill='x')
+        else:
+            self.main.status_frame.pack_forget()
     
     @save_cfg
     def set_wrapping(self):
         """Changes the text wrapping."""
         self.main.textbox.config(wrap=self.wrapping.get())
-        self.config['Wrapping']['wrap'] = self.wrapping.get()
+        self.config['View']['wrap'] = self.wrapping.get()
         self.set_scrollbar()
 
     @save_cfg
